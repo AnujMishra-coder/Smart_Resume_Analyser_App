@@ -18,13 +18,17 @@ from streamlit_tags import st_tags
 from PIL import Image
 import pymysql
 from Courses import ds_course, web_course, android_course, ios_course, uiux_course, resume_videos, interview_videos
-import pafy
+
 import plotly.express as px
-import youtube_dl
+
+
+from yt_dlp import YoutubeDL
 
 def fetch_yt_video(link):
-    video = pafy.new(link)
-    return video.title
+    ydl_opts = {'quiet': True}
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link, download=False)
+        return info.get('title', 'Unknown Title')
 
 
 def get_table_download_link(df, filename, text):
@@ -81,7 +85,7 @@ def course_recommender(course_list):
     return rec_course
 
 
-connection = pymysql.connect(host='localhost', user='root', password='')
+connection = pymysql.connect(host='localhost', user='root', password='anuj')
 cursor = connection.cursor()
 
 
@@ -396,7 +400,7 @@ def run():
         ad_user = st.text_input("Username")
         ad_password = st.text_input("Password", type='password')
         if st.button('Login'):
-            if ad_user == 'machine_learning_hub' and ad_password == 'mlhub123':
+            if ad_user == 'anuj' and ad_password == 'anuj123':
                 st.success("Welcome Kushal")
                 # Display Data
                 cursor.execute('''SELECT*FROM user_data''')
